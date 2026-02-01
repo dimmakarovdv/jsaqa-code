@@ -1,0 +1,21 @@
+{
+  "name": "jsaqa_3_2",
+  "version": "1.0.0",
+  "description": "Jest and Playwright tests",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test:jest && npm run test:playwright",
+    "test:jest": "npx jest",
+    "coverage": "npx jest --collectCoverage",
+    "test:playwright": "npx playwright test",
+    "test:playwright:headed": "npx playwright test --headed",
+    "test:playwright:debug": "npx playwright test --debug"
+  },
+  "keywords": ["jest", "playwright", "test", "jsaqa"],
+  "author": "Makarov Dmitry",
+  "license": "ISC",
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "jest": "^27.3.1"
+  }
+}
