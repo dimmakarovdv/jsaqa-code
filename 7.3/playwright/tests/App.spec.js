@@ -3,34 +3,38 @@ const userData = require('../user');
 
 test.describe('Авторизация на netology.ru', () => {
   test('Валидный вход', async ({ page }) => {
-    await page.goto('https://netology.ru', { waitUntil: 'networkidle' });
-    await page.click('.styles_loginLink__gCSBh.styles_login__X_ArT');
-    await page.click('div.styles_button__MYGdj');
-    await page.waitForSelector('input[type="email"]', { timeout: 10000 });
-    await page.fill('input[type="email"]', userData.validEmail);
-    await page.fill('input[type="password"]', userData.validPassword);
-    await page.click('button:has-text("Войти")');
-    await page.waitForTimeout(3000);
-    const profileElements = await page
-      .locator('text=Профиль, text=Мой профиль')
-      .count();
-    expect(profileElements).toBeGreaterThan(0);
+    await page.goto('https://netology.ru');
+
+    await page.locator('a:has-text("Войти")').click();
+    await page.getByText('Войти по почте', { exact: true }).click();
+
+    await page.type('input[name="email"]', userData.validEmail);
+    await page.type('input[name="password"]', userData.validPassword);
+
+    await page.locator('button').filter({ hasText: 'Войти' }).first().click();
+
+    await expect(page.getByText('Здравствуйте', { exact: true })).toBeVisible({
+      timeout: 120000,
+    });
   });
 
   test('Попытка входа с неверным логином и паролем', async ({ page }) => {
-    await page.goto('https://netology.ru', { waitUntil: 'networkidle' });
-    await page.click('.styles_loginLink__gCSBh.styles_login__X_ArT');
-    await page.click('div.styles_button__MYGdj');
-    await page.waitForSelector('input[type="email"]', { timeout: 10000 });
-    await page.fill('input[type="email"]', userData.invalidEmail);
-    await page.fill('input[type="password"]', userData.invalidPassword);
-    await page.click('button:has-text("Войти")');
-    await page.waitForTimeout(3000);
-    const errorCount = await page
-      .locator(
-        '.notification, .error, .toast, [role="alert"], text=неверный, text=Неверный'
-      )
-      .count();
-    expect(errorCount).toBeGreaterThan(0);
+    await page.goto('https://netology.ru');
+    await page.locator('a:has-text("Войти")').click();
+
+    await expect(
+      page.getByRole('link', { name: 'Войти по почте' })
+    ).toBeVisible();
+    await page.getByRole('link', { name: 'Войти по почте' }).click();
+
+    await page.locator('input[type="email"]').fill(userData.invalidEmail);
+    await page.locator('input[type="password"]').fill(userData.invalidPassword);
+    await page.locator('button:has-text("Войти")').click();
+
+    await page.waitForTimeout(1000);
+
+    await expect(
+      page.locator('.notification, .error, [role="alert"]')
+    ).toHaveText(/неверный|Неверный/, { timeout: 5000 });
   });
 });

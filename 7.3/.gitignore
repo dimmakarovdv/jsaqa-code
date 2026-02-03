@@ -10,3 +10,4 @@ user.js
 playwright/user.js
 coverage/
 test-results/
+.env

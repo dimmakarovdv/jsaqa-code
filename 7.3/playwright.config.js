@@ -1,9 +1,9 @@
 module.exports = {
-  testDir: './playwright/tests', // ← путь ОТНОСИТЕЛЬНО корня проекта
+  testDir: './playwright/tests',
   timeout: 30000,
   use: {
     baseURL: 'https://netology.ru',
-    headless: true,
+    headless: false,
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',
     ignoreHTTPSErrors: true,
